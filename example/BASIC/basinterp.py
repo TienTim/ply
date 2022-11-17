@@ -67,14 +67,20 @@ class BasicInterpreter:
                     self.error = 1
             elif self.prog[lineno][0] == 'WHILE':
                 while_inst = self.prog[lineno]
-                relop = while_inst[1]
-                loop_var = relop[2][1][0]
+                condition = while_inst[1]
+                is_relop = len(condition) > 1
+                loop_var = condition[2][1][0] if is_relop else None
+                break_pc = pc
                 for i in range(pc + 1, len(self.stat)):
-                    if self.prog[self.stat[i]][0] == 'NEXT':
-                        nextvar = self.prog[self.stat[i]][1]
-                        if nextvar != loop_var:
-                            continue
-                        self.loopend[pc] = i
+                    statement = self.prog[self.stat[i]]
+                    if statement[-1] == 'BREAK':
+                        break_pc = i
+                    if statement[0] == 'NEXT':
+                        if is_relop:
+                            nextvar = statement[1]
+                            if nextvar != loop_var:
+                                continue
+                        self.loopend[break_pc] = i
                         break
                 else:
                     print("WHILE WITHOUT NEXT AT LINE %s" % self.stat[pc])
@@ -296,8 +302,13 @@ class BasicInterpreter:
             elif op == 'IF':
                 relop = instr[1]
                 newline = instr[2]
-                if (self.releval(relop)):
-                    self.goto(newline)
+                if self.releval(relop):
+                    if newline == 'BREAK':
+                        # Loop is done. Jump to the after NEXT. Because it isn't increased
+                        self.pc = self.loopend[self.pc] + 1
+                        self.loops.pop()
+                    else:
+                        self.goto(newline)
                     continue
 
             elif op == 'FOR':
@@ -335,11 +346,17 @@ class BasicInterpreter:
                     self.assign((loopvar, None, None), newvalue)
 
             elif op == 'WHILE':
-                relop = instr[1]
-                variable = relop[2]
+                condition = instr[1]
+                if condition[0] == 'TRUE':
+                    if not self.loops or self.loops[-1][0] != self.pc:
+                        # Looks like a new loop. Make the initial assignment
+                        self.loops.append((self.pc, None))
+                    self.pc += 1
+                    continue
+                variable = condition[2]
                 loopvar = variable[1][0]
-                operation = relop[1]
-                fin_val = relop[3]
+                operation = condition[1]
+                fin_val = condition[3]
                 stepval = instr[2]
                 increment = operation in {'<', '<='}
 
@@ -369,15 +386,18 @@ class BasicInterpreter:
 
             elif op == 'NEXT':
                 if not self.loops:
-                    print("NEXT WITHOUT FOR AT LINE %s" % line)
+                    print("NEXT WITHOUT LOOP AT LINE %s" % line)
                     return
 
+                if len(instr) == 1:
+                    self.pc = self.loops[-1][0]
+                    continue
                 nextvar = instr[1]
                 self.pc = self.loops[-1][0]
                 loopinst = self.prog[self.stat[self.pc]]
                 forvar = loopinst[1] if loopinst[0] == 'FOR' else loopinst[1][2][1][0]
                 if nextvar != forvar:
-                    print("NEXT DOESN'T MATCH FOR AT LINE %s" % line)
+                    print("NEXT DOESN'T MATCH LOOP AT LINE %s" % line)
                     return
                 continue
             elif op == 'GOSUB':

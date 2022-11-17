@@ -170,8 +170,9 @@ def p_command_goto_bad(p):
 
 
 def p_command_if(p):
-    '''command : IF relexpr THEN INTEGER'''
-    p[0] = ('IF', p[2], int(p[4]))
+    '''command : IF relexpr THEN INTEGER
+               | IF relexpr THEN BREAK'''
+    p[0] = ('IF', p[2], int(p[4]) if p[4] != 'BREAK' else 'BREAK')
 
 
 def p_command_if_bad(p):
@@ -190,9 +191,11 @@ def p_command_for(p):
     '''command : FOR ID EQUALS expr TO expr optstep'''
     p[0] = ('FOR', p[2], p[4], p[6], p[7])
 
+
 def p_command_while(p):
     '''command : WHILE relexpr optstep'''
     p[0] = ('WHILE', p[2], p[3])
+
 
 def p_command_for_bad_initial(p):
     '''command : FOR ID EQUALS error TO expr optstep'''
@@ -223,9 +226,12 @@ def p_optstep(p):
 
 
 def p_command_next(p):
-    '''command : NEXT ID'''
-
-    p[0] = ('NEXT', p[2])
+    '''command : NEXT ID
+               | NEXT'''
+    if len(p) == 2:
+        p[0] = ('NEXT',)
+    else:
+        p[0] = ('NEXT', p[2])
 
 
 def p_command_next_bad(p):
@@ -367,8 +373,12 @@ def p_relexpr(p):
                | expr GT expr
                | expr GE expr
                | expr EQUALS expr
-               | expr NE expr'''
-    p[0] = ('RELOP', p[2], p[1], p[3])
+               | expr NE expr
+               | TRUE'''
+    if len(p) == 2:
+        p[0] = ('TRUE',)
+    else:
+        p[0] = ('RELOP', p[2], p[1], p[3])
 
 # Variables
 
