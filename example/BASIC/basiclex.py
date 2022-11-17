@@ -1,6 +1,6 @@
 # An implementation of Dartmouth BASIC (1964)
 
-from src.ply import lex
+from ply import lex
 
 keywords = (
     'LET', 'READ', 'DATA', 'PRINT', 'GOTO', 'IF', 'THEN', 'FOR', 'NEXT', 'TO', 'STEP',

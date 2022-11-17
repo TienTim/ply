@@ -1,7 +1,7 @@
 # An implementation of Dartmouth BASIC (1964)
 #
 
-from src.ply import yacc
+from ply import yacc
 import basiclex
 
 tokens = basiclex.tokens
