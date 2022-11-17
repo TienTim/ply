@@ -190,6 +190,9 @@ def p_command_for(p):
     '''command : FOR ID EQUALS expr TO expr optstep'''
     p[0] = ('FOR', p[2], p[4], p[6], p[7])
 
+def p_command_while(p):
+    '''command : WHILE relexpr optstep'''
+    p[0] = ('WHILE', p[2], p[3])
 
 def p_command_for_bad_initial(p):
     '''command : FOR ID EQUALS error TO expr optstep'''

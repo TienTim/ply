@@ -65,6 +65,20 @@ class BasicInterpreter:
                 else:
                     print("FOR WITHOUT NEXT AT LINE %s" % self.stat[pc])
                     self.error = 1
+            elif self.prog[lineno][0] == 'WHILE':
+                while_inst = self.prog[lineno]
+                relop = while_inst[1]
+                loop_var = relop[2][1][0]
+                for i in range(pc + 1, len(self.stat)):
+                    if self.prog[self.stat[i]][0] == 'NEXT':
+                        nextvar = self.prog[self.stat[i]][1]
+                        if nextvar != loop_var:
+                            continue
+                        self.loopend[pc] = i
+                        break
+                else:
+                    print("WHILE WITHOUT NEXT AT LINE %s" % self.stat[pc])
+                    self.error = 1
 
     # Evaluate an expression
     def eval(self, expr):
@@ -320,6 +334,39 @@ class BasicInterpreter:
                 else:
                     self.assign((loopvar, None, None), newvalue)
 
+            elif op == 'WHILE':
+                relop = instr[1]
+                variable = relop[2]
+                loopvar = variable[1][0]
+                operation = relop[1]
+                fin_val = relop[3]
+                stepval = instr[2]
+                increment = operation in {'<', '<='}
+
+                # Check to see if this is a new loop
+                if not self.loops or self.loops[-1][0] != self.pc:
+                    # Looks like a new loop. Make the initial assignment
+                    newvalue = ('NUM', self.vars[loopvar])
+                    if not stepval:
+                        stepval = ('NUM', 1 if increment else -1)
+                    stepval = self.eval(stepval)    # Evaluate step here
+                    self.loops.append((self.pc, stepval))
+                else:
+                    # It's a repeat of the previous loop
+                    # Update the value of the loop variable according to the
+                    # step
+                    stepval = ('NUM', self.loops[-1][1])
+                    newvalue = (
+                        'BINOP', '+', ('VAR', (loopvar, None, None)), stepval)
+
+                fin_val = (fin_val[0], fin_val[1] + (-1 if increment else 1))
+                if not self.releval(('RELOP', operation, variable, fin_val)):
+                    # Loop is done. Jump to the NEXT
+                    self.pc = self.loopend[self.pc]
+                    self.loops.pop()
+                else:
+                    self.assign((loopvar, None, None), newvalue)
+
             elif op == 'NEXT':
                 if not self.loops:
                     print("NEXT WITHOUT FOR AT LINE %s" % line)
@@ -328,7 +375,7 @@ class BasicInterpreter:
                 nextvar = instr[1]
                 self.pc = self.loops[-1][0]
                 loopinst = self.prog[self.stat[self.pc]]
-                forvar = loopinst[1]
+                forvar = loopinst[1] if loopinst[0] == 'FOR' else loopinst[1][2][1][0]
                 if nextvar != forvar:
                     print("NEXT DOESN'T MATCH FOR AT LINE %s" % line)
                     return
