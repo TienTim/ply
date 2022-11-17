@@ -1,0 +1,11 @@
+INFO:root:PLY: PARSE DEBUG START
+INFO:root:Action : Reduce rule [expression -> NUMBER] with [5] and goto state 3
+INFO:root:Result : <int @ 0x10502e9b0> (5)
+INFO:root:Action : Reduce rule [expression -> NUMBER] with [6] and goto state 16
+INFO:root:Result : <int @ 0x10502e9d0> (6)
+INFO:root:Action : Reduce rule [expression -> expression + expression] with [5,'+',6] and goto state 3
+INFO:root:Result : <int @ 0x10502ea70> (11)
+INFO:root:Action : Reduce rule [statement -> expression] with [11] and goto state 1
+INFO:root:Result : <NoneType @ 0x104f40398> (None)
+INFO:root:Done   : Returning <NoneType @ 0x104f40398> (None)
+INFO:root:PLY: PARSE DEBUG END
