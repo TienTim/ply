@@ -32,7 +32,7 @@ def t_error(t):
     t.lexer.skip(1)
 
 # Build the lexer
-import ply.lex as lex
+import src.ply.lex as lex
 lexer = lex.lex()
 
 # Parsing rules
@@ -101,7 +101,7 @@ def p_error(p):
     else:
         print("Syntax error at EOF")
 
-import ply.yacc as yacc
+import src.ply.yacc as yacc
 parser = yacc.yacc()
 
 while True:

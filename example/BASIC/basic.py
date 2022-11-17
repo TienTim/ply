@@ -1,6 +1,7 @@
 # An implementation of Dartmouth BASIC (1964)
 #
 
+import sys
 import basiclex
 import basparse
 import basinterp
