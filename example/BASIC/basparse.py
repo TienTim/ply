@@ -171,8 +171,10 @@ def p_command_goto_bad(p):
 
 def p_command_if(p):
     '''command : IF relexpr THEN INTEGER
-               | IF relexpr THEN BREAK'''
-    p[0] = ('IF', p[2], int(p[4]) if p[4] != 'BREAK' else 'BREAK')
+                | IF relexpr THEN BREAK
+                | IF relexpr THEN CONTINUE'''
+    p[0] = ('IF', p[2], int(p[4]) if p[4] not in {'BREAK', 'CONTINUE'} else
+    ('BREAK' if p[4] == 'BREAK' else 'CONTINUE'))
 
 
 def p_command_if_bad(p):

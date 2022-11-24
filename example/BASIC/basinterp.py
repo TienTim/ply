@@ -52,38 +52,28 @@ class BasicInterpreter:
     def check_loops(self):
         for pc in range(len(self.stat)):
             lineno = self.stat[pc]
-            if self.prog[lineno][0] == 'FOR':
-                forinst = self.prog[lineno]
-                loopvar = forinst[1]
-                for i in range(pc + 1, len(self.stat)):
-                    if self.prog[self.stat[i]][0] == 'NEXT':
-                        nextvar = self.prog[self.stat[i]][1]
-                        if nextvar != loopvar:
-                            continue
-                        self.loopend[pc] = i
-                        break
-                else:
-                    print("FOR WITHOUT NEXT AT LINE %s" % self.stat[pc])
-                    self.error = 1
-            elif self.prog[lineno][0] == 'WHILE':
-                while_inst = self.prog[lineno]
-                condition = while_inst[1]
+            loop_type = self.prog[lineno][0]
+            if loop_type in {'FOR', 'WHILE'}:
+                loop_inst = self.prog[lineno]
+                condition = loop_inst[1]
                 is_relop = len(condition) > 1
-                loop_var = condition[2][1][0] if is_relop else None
-                break_pc = pc
+                is_for_loop = loop_type == 'FOR'
+                loop_var = loop_inst[1] if is_for_loop else (condition[2][1][0] if is_relop else None)
+                break_pc = 0
                 for i in range(pc + 1, len(self.stat)):
                     statement = self.prog[self.stat[i]]
                     if statement[-1] == 'BREAK':
                         break_pc = i
                     if statement[0] == 'NEXT':
-                        if is_relop:
+                        if is_for_loop or is_relop:
                             nextvar = statement[1]
                             if nextvar != loop_var:
                                 continue
-                        self.loopend[break_pc] = i
+                        self.loopend[break_pc] = i + 1
+                        self.loopend[pc] = i
                         break
                 else:
-                    print("WHILE WITHOUT NEXT AT LINE %s" % self.stat[pc])
+                    print("LOOP WITHOUT NEXT AT LINE %s" % self.stat[pc])
                     self.error = 1
 
     # Evaluate an expression
@@ -304,9 +294,11 @@ class BasicInterpreter:
                 newline = instr[2]
                 if self.releval(relop):
                     if newline == 'BREAK':
-                        # Loop is done. Jump to the after NEXT. Because it isn't increased
-                        self.pc = self.loopend[self.pc] + 1
+                        # Loop is done. Jump out the loop
+                        self.pc = self.loopend[self.pc]
                         self.loops.pop()
+                    elif newline == 'CONTINUE':
+                        self.pc = self.loops[-1][0]
                     else:
                         self.goto(newline)
                     continue
