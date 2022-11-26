@@ -5,14 +5,14 @@ from ply import lex
 keywords = (
     'LET', 'READ', 'DATA', 'PRINT', 'GOTO', 'IF', 'THEN', 'FOR', 'NEXT', 'TO', 'STEP',
     'END', 'STOP', 'DEF', 'GOSUB', 'DIM', 'REM', 'RETURN', 'RUN', 'LIST', 'NEW', 'WHILE',
-    'TRUE', 'BREAK', 'CONTINUE'
+    'TRUE', 'BREAK', 'CONTINUE', 'POP'
 )
 
 tokens = keywords + (
     'EQUALS', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'POWER',
     'LPAREN', 'RPAREN', 'LT', 'LE', 'GT', 'GE', 'NE',
     'COMMA', 'SEMI', 'INTEGER', 'FLOAT', 'STRING',
-    'ID', 'NEWLINE', 'COLON', 'LB', 'RB'
+    'ID', 'NEWLINE', 'COLON', 'LCB', 'RCB', 'LSB', 'RSB'
 )
 
 t_ignore = ' \t'
@@ -49,8 +49,10 @@ t_INTEGER = r'\d+'
 t_FLOAT = r'((\d*\.\d+)(E[\+-]?\d+)?|([1-9]\d*E[\+-]?\d+))'
 t_STRING = r'\".*?\"'
 t_COLON = r'\:'
-t_LB = r'\{'
-t_RB = r'\}'
+t_LCB = r'\{'
+t_RCB = r'\}'
+t_LSB = r'\['
+t_RSB = r'\]'
 
 
 def t_NEWLINE(t):

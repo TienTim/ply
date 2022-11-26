@@ -136,7 +136,8 @@ class BasicInterpreter:
         elif etype == 'DICT':
             dict_list = expr[1]
             return {key: value[1] for key, value in dict_list}
-
+        elif etype == 'STRING':
+            return expr[1]
 
     # Evaluate a relational expression
     def releval(self, expr):
@@ -187,6 +188,10 @@ class BasicInterpreter:
         elif dim1 and not dim2:
             # List assignment
             dim1val = self.eval(dim1)
+            # Dictionary assignment
+            if dim1[0] == 'STRING':
+                self.vars[var][dim1[1]] = self.eval(value)
+                return
             if not var in self.lists:
                 self.lists[var] = [0] * 10
 
@@ -435,6 +440,11 @@ class BasicInterpreter:
                         for i in range(x):
                             v.append(temp[:])
                         self.tables[vname] = v
+            elif op == 'POP':
+                target = instr[1]
+                dict_name = target[0]
+                key = target[1][1]
+                self.vars[dict_name].pop(key)
 
             self.pc += 1
 

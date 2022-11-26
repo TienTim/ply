@@ -309,6 +309,11 @@ def p_command_dim_bad(p):
     '''command : DIM error'''
     p[0] = "MALFORMED VARIABLE LIST IN DIM"
 
+
+def p_command_remove(p):
+    '''command : POP variable'''
+    p[0] = ('POP', p[2])
+
 # List of variables supplied to DIM statement
 
 
@@ -368,7 +373,7 @@ def p_expr_unary(p):
 
 
 def p_expr_dict(p):
-    '''expr : LB dict_list RB'''
+    '''expr : LCB dict_list RCB'''
     p[0] = ('DICT', p[2])
 
 
@@ -398,7 +403,8 @@ def p_relexpr(p):
 def p_variable(p):
     '''variable : ID
               | ID LPAREN expr RPAREN
-              | ID LPAREN expr COMMA expr RPAREN'''
+              | ID LPAREN expr COMMA expr RPAREN
+              | ID LSB expr RSB'''
     if len(p) == 2:
         p[0] = (p[1], None, None)
     elif len(p) == 5:
