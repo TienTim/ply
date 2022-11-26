@@ -310,7 +310,7 @@ def p_command_dim_bad(p):
     p[0] = "MALFORMED VARIABLE LIST IN DIM"
 
 
-def p_command_remove(p):
+def p_command_dict_pop(p):
     '''command : POP variable'''
     p[0] = ('POP', p[2])
 

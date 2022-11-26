@@ -121,6 +121,10 @@ class BasicInterpreter:
                                   self.stat[self.pc])
                             raise RuntimeError
                         return self.lists[var][dim1val - 1]
+                    # A dict item evaluation
+                    else:
+                        key = dim1[1]
+                        return self.vars[var][key]
             if dim1 and dim2:
                 if var in self.tables:
                     dim1val = self.eval(dim1)
