@@ -366,6 +366,16 @@ def p_expr_unary(p):
     '''expr : MINUS expr %prec UMINUS'''
     p[0] = ('UNARY', '-', p[2])
 
+
+def p_expr_dict(p):
+    '''expr : LB dict_list RB'''
+    p[0] = ('DICT', p[2])
+
+
+def p_expr_string(p):
+    '''expr : STRING'''
+    p[0] = ('STRING', eval(p[1]))
+
 # Relational expressions
 
 
@@ -449,6 +459,21 @@ def p_plist(p):
         p[0].append(p[3])
     else:
         p[0] = [p[1]]
+
+
+def p_dict_list(p):
+    '''dict_list : dict_list COMMA dict_item
+                    | dict_item'''
+    if len(p) > 3:
+        p[0] = p[1]
+        p[0].append(p[3])
+    else:
+        p[0] = [p[1]]
+
+
+def p_dict_item(p):
+    '''dict_item : STRING COLON expr'''
+    p[0] = (p[1][1:-1], p[3])
 
 
 def p_item_string(p):

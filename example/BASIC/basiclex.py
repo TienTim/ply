@@ -12,7 +12,7 @@ tokens = keywords + (
     'EQUALS', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'POWER',
     'LPAREN', 'RPAREN', 'LT', 'LE', 'GT', 'GE', 'NE',
     'COMMA', 'SEMI', 'INTEGER', 'FLOAT', 'STRING',
-    'ID', 'NEWLINE'
+    'ID', 'NEWLINE', 'COLON', 'LB', 'RB'
 )
 
 t_ignore = ' \t'
@@ -28,6 +28,7 @@ def t_ID(t):
     if t.value in keywords:
         t.type = t.value
     return t
+
 
 t_EQUALS = r'='
 t_PLUS = r'\+'
@@ -47,6 +48,9 @@ t_SEMI = r';'
 t_INTEGER = r'\d+'
 t_FLOAT = r'((\d*\.\d+)(E[\+-]?\d+)?|([1-9]\d*E[\+-]?\d+))'
 t_STRING = r'\".*?\"'
+t_COLON = r'\:'
+t_LB = r'\{'
+t_RB = r'\}'
 
 
 def t_NEWLINE(t):

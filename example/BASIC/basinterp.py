@@ -69,7 +69,8 @@ class BasicInterpreter:
                             nextvar = statement[1]
                             if nextvar != loop_var:
                                 continue
-                        self.loopend[break_pc] = i + 1
+                        if break_pc:
+                            self.loopend[break_pc] = i + 1
                         self.loopend[pc] = i
                         break
                 else:
@@ -132,6 +133,10 @@ class BasicInterpreter:
             print("UNDEFINED VARIABLE %s AT LINE %s" %
                   (var, self.stat[self.pc]))
             raise RuntimeError
+        elif etype == 'DICT':
+            dict_list = expr[1]
+            return {key: value[1] for key, value in dict_list}
+
 
     # Evaluate a relational expression
     def releval(self, expr):
