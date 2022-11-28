@@ -103,6 +103,8 @@ class BasicInterpreter:
             if not dim1 and not dim2:
                 if var in self.vars:
                     return self.vars[var]
+                elif var in self.lists:
+                    return self.lists[var]
                 else:
                     print("UNDEFINED VARIABLE %s AT LINE %s" %
                           (var, self.stat[self.pc]))
