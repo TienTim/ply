@@ -379,7 +379,7 @@ def p_expr_dict(p):
 
 def p_expr_string(p):
     '''expr : STRING'''
-    p[0] = ('STRING', p[1])
+    p[0] = ('STRING', p[1][1:-1])
 
 
 def p_expr_dict_func(p):
