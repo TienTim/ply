@@ -382,10 +382,10 @@ def p_expr_string(p):
     p[0] = ('STRING', p[1])
 
 
-def p_expr_list(p):
-    '''expr : variable DOT KEYS
-            | variable DOT VALUES'''
-    p[0] = ('LIST', p[1], p[3])
+def p_expr_dict_func(p):
+    '''expr : variable DOT KEYS LPAREN RPAREN
+            | variable DOT VALUES LPAREN RPAREN'''
+    p[0] = ('DICT_FUNC', p[1], p[3])
 # Relational expressions
 
 

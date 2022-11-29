@@ -144,6 +144,11 @@ class BasicInterpreter:
             return {key: value[1] for key, value in dict_list}
         elif etype == 'STRING':
             return expr[1]
+        elif etype == 'DICT_FUNC':
+            var, _, _ = expr[1]
+            dictionary = self.vars[var]
+            func = expr[2]
+            return list(dictionary.keys() if func == 'KEYS' else dictionary.values())
 
     # Evaluate a relational expression
     def releval(self, expr):
