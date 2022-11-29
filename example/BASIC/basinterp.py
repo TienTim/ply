@@ -451,11 +451,10 @@ class BasicInterpreter:
                         for i in range(x):
                             v.append(temp[:])
                         self.tables[vname] = v
-            elif op == 'POP':
-                target = instr[1]
-                dict_name = target[0]
-                key = target[1][1]
-                self.vars[dict_name].pop(key)
+            elif op == 'OOP':
+                _, obj, func, para = instr[1]
+                dict_name = obj[0]
+                self.vars[dict_name].pop(para)
 
             self.pc += 1
 

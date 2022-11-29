@@ -310,9 +310,9 @@ def p_command_dim_bad(p):
     p[0] = "MALFORMED VARIABLE LIST IN DIM"
 
 
-def p_command_dict_pop(p):
-    '''command : POP variable'''
-    p[0] = ('POP', p[2])
+def p_command_oop(p):
+    '''command : expr'''
+    p[0] = ('OOP', p[1])
 
 # List of variables supplied to DIM statement
 
@@ -384,8 +384,12 @@ def p_expr_string(p):
 
 def p_expr_dict_func(p):
     '''expr : variable DOT KEYS LPAREN RPAREN
-            | variable DOT VALUES LPAREN RPAREN'''
-    p[0] = ('DICT_FUNC', p[1], p[3])
+            | variable DOT VALUES LPAREN RPAREN
+            | variable DOT POP LPAREN STRING RPAREN'''
+    if len(p) == 7:
+        p[0] = ('DICT_FUNC', p[1], p[3], p[5][1:-1])
+    else:
+        p[0] = ('DICT_FUNC', p[1], p[3])
 # Relational expressions
 
 

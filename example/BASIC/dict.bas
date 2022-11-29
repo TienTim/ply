@@ -8,7 +8,7 @@
 11 LET CAR["brand"] = "Toyota"
 12 LET CAR["color"] = "red"
 13 PRINT CAR
-14 POP CAR["brand"]
+14 CAR.POP("brand")
 15 PRINT CAR
 20 END
 
