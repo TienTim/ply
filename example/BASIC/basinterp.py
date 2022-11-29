@@ -454,7 +454,8 @@ class BasicInterpreter:
             elif op == 'OOP':
                 _, obj, func, para = instr[1]
                 dict_name = obj[0]
-                self.vars[dict_name].pop(para)
+                if func == 'POP':
+                    self.vars[dict_name].pop(para)
 
             self.pc += 1
 
