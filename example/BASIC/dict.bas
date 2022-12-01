@@ -17,3 +17,12 @@
 15 LET X = CAR.VALUES()
 16 PRINT X
 20 END
+
+10 LET CAR = {"brand": "Ford", "model": "Mustang", "year": 1964}
+11 PRINT CAR
+15 LET X = {"seat": 5, "wheel": "sport", "power": 4.0}
+20 CAR.UPDATE(X)
+21 PRINT CAR
+25 CAR.CLEAR()
+30 PRINT CAR
+40 END

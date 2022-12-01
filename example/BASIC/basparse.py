@@ -385,9 +385,11 @@ def p_expr_string(p):
 def p_expr_dict_func(p):
     '''expr : variable DOT KEYS LPAREN RPAREN
             | variable DOT VALUES LPAREN RPAREN
-            | variable DOT POP LPAREN STRING RPAREN'''
+            | variable DOT POP LPAREN STRING RPAREN
+            | variable DOT CLEAR LPAREN RPAREN
+            | variable DOT UPDATE LPAREN variable RPAREN'''
     if len(p) == 7:
-        p[0] = ('DICT_FUNC', p[1], p[3], p[5][1:-1])
+        p[0] = ('DICT_FUNC', p[1], p[3], p[5][1:-1] if p[5][0] == '\"' else p[5])
     else:
         p[0] = ('DICT_FUNC', p[1], p[3])
 # Relational expressions

@@ -452,10 +452,20 @@ class BasicInterpreter:
                             v.append(temp[:])
                         self.tables[vname] = v
             elif op == 'OOP':
-                _, obj, func, para = instr[1]
+                command = instr[1]
+                obj = command[1]
+                func = command[2]
                 dict_name = obj[0]
                 if func == 'POP':
+                    para = command[3]
                     self.vars[dict_name].pop(para)
+                elif func == 'CLEAR':
+                    self.vars[dict_name].clear()
+                elif func == 'UPDATE':
+                    obj_2 = command[3]
+                    dict_name_2 = obj_2[0]
+                    dict_2 = self.vars[dict_name_2]
+                    self.vars[dict_name].update(dict_2)
 
             self.pc += 1
 
