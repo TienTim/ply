@@ -379,17 +379,16 @@ class BasicInterpreter:
                     newvalue = ('NUM', self.vars[loopvar])
                     if not stepval:
                         stepval = ('NUM', 1 if increment else -1)
-                    stepval = self.eval(stepval)    # Evaluate step here
-                    self.loops.append((self.pc, stepval))
+                    self.loops.append((self.pc, self.eval(stepval)))
                 else:
                     # It's a repeat of the previous loop
                     # Update the value of the loop variable according to the
                     # step
                     stepval = ('NUM', self.loops[-1][1])
-                    newvalue = (
-                        'BINOP', '+', ('VAR', (loopvar, None, None)), stepval)
+                    newvalue = ('BINOP', '+', ('VAR', (loopvar, None, None)), stepval)
 
-                fin_val = (fin_val[0], fin_val[1] + (-1 if increment else 1))
+                final_val = self.eval(fin_val) - self.eval(stepval)
+                fin_val = ('NUM', final_val)
                 if not self.releval(('RELOP', operation, variable, fin_val)):
                     # Loop is done. Jump to the NEXT
                     self.pc = self.loopend[self.pc]
